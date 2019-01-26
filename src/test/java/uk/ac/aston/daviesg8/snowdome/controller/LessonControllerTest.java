@@ -11,9 +11,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import uk.ac.aston.daviesg8.snowdome.model.entity.Lesson;
 import uk.ac.aston.daviesg8.snowdome.repository.LessonRepository;
 
-import javax.servlet.http.HttpSession;
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -114,6 +111,29 @@ public class LessonControllerTest extends AbstractControllerTest {
                 .session(super.getNewMockHttpSession(true)))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("Lesson not found"));
+    }
+
+    @Test
+    public void cancelLessonSuccess() throws Exception {
+        Lesson testLesson = super.createTestLesson("testLessonId1", "testLessonDescription1");
+
+        MockHttpSession httpSession = super.getNewMockHttpSession(true);
+        Set<Lesson> selectedLessons = Collections.singleton(testLesson);
+        httpSession.setAttribute("selectedLessons", selectedLessons);
+
+        this.mockMvc.perform(post("/lessons/cancel")
+                .param("lessonId", "testLessonId1")
+                .session(httpSession))
+                .andExpect(redirectedUrl("/lessons/selected"));
+    }
+
+    @Test
+    public void cancelLessonNonLoggedInUser() throws Exception {
+        this.mockMvc.perform(post("/lessons/cancel")
+                .param("lessonId", "testLessonId1")
+                .session(super.getNewMockHttpSession(false)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().string("You must be logged in to access that resource"));
     }
 
     @Test

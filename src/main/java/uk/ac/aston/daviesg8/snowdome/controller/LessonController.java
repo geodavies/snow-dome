@@ -36,7 +36,7 @@ public class LessonController extends AbstractAuthenticatedController {
      * Displays the lessons page and injects all available lessons available in the database.
      *
      * @param httpSession the http session to check client logged in
-     * @param modelMap the model to add lessons to
+     * @param modelMap    the model to add lessons to
      * @return lessons page view
      * @throws ClientNotLoggedInException the client is not logged in
      */
@@ -56,10 +56,10 @@ public class LessonController extends AbstractAuthenticatedController {
      * not be added.
      *
      * @param httpSession the http session to check client logged in and to add the selected lesson to
-     * @param lessonId the lesson to select
+     * @param lessonId    the lesson to select
      * @return redirect to the selected lessons page
-     * @throws ClientNotLoggedInException the client isn't logged in
-     * @throws LessonNotFoundException the selected lesson could not be found in the database
+     * @throws ClientNotLoggedInException              the client isn't logged in
+     * @throws LessonNotFoundException                 the selected lesson could not be found in the database
      * @throws MaximumSelectedLessonsExceededException the client has already selected 3 lessons
      */
     @RequestMapping(value = "/lessons/select", method = RequestMethod.POST)
@@ -73,10 +73,28 @@ public class LessonController extends AbstractAuthenticatedController {
     }
 
     /**
+     * Handles a post request to cancel a single lesson. This will remove any instances of that lesson from the current
+     * session.
+     *
+     * @param httpSession the http session to check client logged in and remove selected lesson from
+     * @param lessonId    the selected lesson to cancel
+     * @return redirect to the selected lessons page
+     * @throws ClientNotLoggedInException the client isn't logged in
+     */
+    @RequestMapping(value = "/lessons/cancel", method = RequestMethod.POST)
+    public String postCancelLesson(HttpSession httpSession, @RequestParam("lessonId") String lessonId) throws ClientNotLoggedInException {
+        super.checkLoggedIn(httpSession);
+
+        lessonService.removeLessonFromSession(httpSession, lessonId);
+
+        return "redirect:/lessons/selected";
+    }
+
+    /**
      * Displays all of the currently selected lessons
      *
      * @param httpSession to check if the client is logged in and to retrieve the selected lessons
-     * @param modelMap the model to add selected lessons to
+     * @param modelMap    the model to add selected lessons to
      * @return selected lessons page vieww
      * @throws ClientNotLoggedInException the client is not logged in
      */

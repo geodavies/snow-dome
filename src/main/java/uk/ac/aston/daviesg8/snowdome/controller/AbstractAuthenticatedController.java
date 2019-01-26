@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
  */
 public abstract class AbstractAuthenticatedController {
 
-    protected final ClientService clientService;
+    private final ClientService clientService;
 
     protected AbstractAuthenticatedController(ClientService clientService) {
         this.clientService = clientService;

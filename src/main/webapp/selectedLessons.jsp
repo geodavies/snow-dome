@@ -10,6 +10,7 @@
         table {
             border-collapse: collapse;
         }
+
         table, th, td {
             border: 1px solid black;
         }
@@ -24,6 +25,7 @@
         <td>Level</td>
         <td>Start Date</td>
         <td>End Date</td>
+        <td>Cancel</td>
     </tr>
     <c:forEach items="${lessons}" var="lesson">
         <tr>
@@ -31,6 +33,12 @@
             <td>${lesson.level}</td>
             <td>${lesson.startDateTime}</td>
             <td>${lesson.endDateTime}</td>
+            <td>
+                <form action="${pageContext.request.contextPath}/lessons/cancel" method="POST">
+                    <input type="hidden" id="lessonId" name="lessonId" value="${lesson.lessonid}">
+                    <input type="submit" value="Cancel">
+                </form>
+            </td>
         </tr>
     </c:forEach>
 </table>

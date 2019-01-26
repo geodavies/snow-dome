@@ -157,4 +157,59 @@ public class LessonServiceTest {
         verify(mockHttpSession, times(0)).setAttribute(eq("selectedLessons"), any());
     }
 
+    @Test
+    public void removeLessonFromSessionOneLesson() {
+        HttpSession mockHttpSession = mock(HttpSession.class);
+        Lesson mockLesson = mock(Lesson.class);
+        when(mockLesson.getLessonid()).thenReturn("testLessonId1");
+        Set<Lesson> existingLessons = new HashSet<>();
+        existingLessons.add(mockLesson);
+        when(mockHttpSession.getAttribute(eq("selectedLessons"))).thenReturn(existingLessons);
+        doNothing().when(mockHttpSession).setAttribute(eq("selectedLessons"), any());
+
+        lessonService.removeLessonFromSession(mockHttpSession, "testLessonId1");
+
+        verify(mockHttpSession, times(1)).getAttribute(eq("selectedLessons"));
+        ArgumentCaptor<Set<Lesson>> lessonSetArgumentCaptor = ArgumentCaptor.forClass(Set.class);
+        verify(mockHttpSession, times(1)).setAttribute(eq("selectedLessons"), lessonSetArgumentCaptor.capture());
+        assertEquals(0, lessonSetArgumentCaptor.getValue().size());
+    }
+
+    @Test
+    public void removeLessonFromSessionLessonNotSelected() {
+        HttpSession mockHttpSession = mock(HttpSession.class);
+        Lesson mockLesson = mock(Lesson.class);
+        when(mockLesson.getLessonid()).thenReturn("testLessonId2");
+        Set<Lesson> existingLessons = new HashSet<>();
+        existingLessons.add(mockLesson);
+        when(mockHttpSession.getAttribute(eq("selectedLessons"))).thenReturn(existingLessons);
+        doNothing().when(mockHttpSession).setAttribute(eq("selectedLessons"), any());
+
+        lessonService.removeLessonFromSession(mockHttpSession, "testLessonId1");
+
+        verify(mockHttpSession, times(1)).getAttribute(eq("selectedLessons"));
+        ArgumentCaptor<Set<Lesson>> lessonSetArgumentCaptor = ArgumentCaptor.forClass(Set.class);
+        verify(mockHttpSession, times(1)).setAttribute(eq("selectedLessons"), lessonSetArgumentCaptor.capture());
+        Set<Lesson> newSelectedLessons = lessonSetArgumentCaptor.getValue();
+        assertEquals(1, newSelectedLessons.size());
+        for (Lesson lesson : newSelectedLessons) {
+            assertEquals(mockLesson, lesson);
+        }
+    }
+
+    @Test
+    public void removeLessonFromSessionZeroLessons() {
+        HttpSession mockHttpSession = mock(HttpSession.class);
+        when(mockHttpSession.getAttribute(eq("selectedLessons"))).thenReturn(Collections.emptySet());
+        doNothing().when(mockHttpSession).setAttribute(eq("selectedLessons"), any());
+
+        lessonService.removeLessonFromSession(mockHttpSession, "testLessonId1");
+
+        verify(mockHttpSession, times(1)).getAttribute(eq("selectedLessons"));
+        ArgumentCaptor<Set<Lesson>> lessonSetArgumentCaptor = ArgumentCaptor.forClass(Set.class);
+        verify(mockHttpSession, times(1)).setAttribute(eq("selectedLessons"), lessonSetArgumentCaptor.capture());
+        Set<Lesson> newSelectedLessons = lessonSetArgumentCaptor.getValue();
+        assertEquals(0, newSelectedLessons.size());
+    }
+
 }
