@@ -104,6 +104,20 @@ public class ClientControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    public void getClientExists204() throws Exception {
+        addTestClientToDatabase();
+
+        this.mockMvc.perform(get("/clientExists/" + TEST_CLIENT_USERNAME))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void getClientExists404() throws Exception {
+        this.mockMvc.perform(get("/clientExists/" + TEST_CLIENT_USERNAME))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     public void getLogout() throws Exception {
         this.mockMvc.perform(get("/logout")
                 .session(super.getNewMockHttpSession(true)))

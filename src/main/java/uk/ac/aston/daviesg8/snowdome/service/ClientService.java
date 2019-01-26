@@ -31,8 +31,8 @@ public class ClientService {
      * client can't be found then an exception is thrown.
      *
      * @param httpSession the http session to add client to
-     * @param username the username of the client
-     * @param password the password of the client
+     * @param username    the username of the client
+     * @param password    the password of the client
      * @throws ClientNotFoundException the client wasn't found in the database
      */
     public void addClientToSession(HttpSession httpSession, String username, String password) throws ClientNotFoundException {
@@ -78,6 +78,20 @@ public class ClientService {
 
         log.info("Persisting new Client to database");
         clientRepository.save(newClient);
+    }
+
+    /**
+     * Checks if a client exists with the given username
+     *
+     * @param username the username to check for
+     * @return boolean true=client exists, false=client doesn't exist
+     */
+    public boolean checkClientExists(String username) {
+        log.info("Checking if Client already exists with username: {}", username);
+
+        Optional<Client> optionalClient = clientRepository.findByUsername(username);
+
+        return optionalClient.isPresent();
     }
 
     /**

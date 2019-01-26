@@ -34,7 +34,7 @@ public class BookingServiceTest {
 
         doNothing().when(mockLessonBookedRepository).deleteAllByClientid(eq(client.getClientid()));
 
-        bookingService.deleteExistingBookingForClient(client);
+        bookingService.deleteExistingBookingsForClient(client);
 
         verify(mockLessonBookedRepository, times(1)).deleteAllByClientid(eq(client.getClientid()));
     }

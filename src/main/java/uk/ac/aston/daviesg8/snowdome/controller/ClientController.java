@@ -1,7 +1,10 @@
 package uk.ac.aston.daviesg8.snowdome.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,8 +42,8 @@ public class ClientController {
      * they are then add them to the session. If no client is found then reject the request.
      *
      * @param httpSession the http session to populate with the client
-     * @param username the client username
-     * @param password the client password
+     * @param username    the client username
+     * @param password    the client password
      * @return redirect to login page or available lessons
      * @throws ClientNotFoundException no client could be found with the given credentials
      */
@@ -70,11 +73,11 @@ public class ClientController {
      * for whatever reason after adding the client it can't be found then an exception is thrown.
      *
      * @param httpSession the http session to add client to
-     * @param username the new client username
-     * @param password the new client password
+     * @param username    the new client username
+     * @param password    the new client password
      * @return redirect to register or lessons
      * @throws ClientAlreadyExistsException a client already exists with the same username
-     * @throws ClientNotFoundException the newly created client can't be found in the database
+     * @throws ClientNotFoundException      the newly created client can't be found in the database
      */
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public String register(HttpSession httpSession,
@@ -86,6 +89,24 @@ public class ClientController {
         clientService.addClientToSession(httpSession, username, password);
 
         return "redirect:/lessons";
+    }
+
+    /**
+     * Checks whether the provided username has an associated client in the database. If it does then return 204
+     * otherwise return 404.
+     *
+     * @param username the username to check
+     * @return client exists=204, client doesn't exist=404
+     */
+    @RequestMapping(value = "/clientExists/{username}", method = RequestMethod.GET)
+    public ResponseEntity clientExists(@PathVariable("username") String username) {
+
+        boolean clientExists = clientService.checkClientExists(username);
+        if (clientExists) {
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
     }
 
     /**

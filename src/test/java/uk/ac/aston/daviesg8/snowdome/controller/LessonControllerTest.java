@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -137,7 +138,20 @@ public class LessonControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void getSelectedLessonsLoggedInUser() throws Exception {
+    public void getSelectedLessonsLessonsSelected() throws Exception {
+        MockHttpSession mockHttpSession = super.getNewMockHttpSession(true);
+        Set<Lesson> lessons = new HashSet<>();
+        lessons.add(mock(Lesson.class));
+        mockHttpSession.setAttribute("selectedLessons", lessons);
+
+        this.mockMvc.perform(get("/lessons/selected")
+                .session(mockHttpSession))
+                .andExpect(status().isOk())
+                .andExpect(view().name("/selectedLessons"));
+    }
+
+    @Test
+    public void getSelectedLessonsNoLessonsSelected() throws Exception {
         this.mockMvc.perform(get("/lessons/selected")
                 .session(super.getNewMockHttpSession(true)))
                 .andExpect(status().isOk())

@@ -125,6 +125,26 @@ public class ClientServiceTest {
     }
 
     @Test
+    public void checkUserExistsTrue() {
+        when(mockClientRepository.findByUsername(eq(TEST_CLIENT_USERNAME)))
+                .thenReturn(Optional.of(mock(Client.class)));
+
+        boolean exists = clientService.checkClientExists(TEST_CLIENT_USERNAME);
+
+        assertTrue(exists);
+    }
+
+    @Test
+    public void checkUserExistsFalse() {
+        when(mockClientRepository.findByUsername(eq(TEST_CLIENT_USERNAME)))
+                .thenReturn(Optional.empty());
+
+        boolean exists = clientService.checkClientExists(TEST_CLIENT_USERNAME);
+
+        assertFalse(exists);
+    }
+
+    @Test
     public void logOutClient() {
         HttpSession mockHttpSession = mock(HttpSession.class);
         doNothing().when(mockHttpSession).invalidate();

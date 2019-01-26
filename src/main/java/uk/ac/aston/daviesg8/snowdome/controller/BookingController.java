@@ -47,7 +47,7 @@ public class BookingController extends AbstractAuthenticatedController {
             selectedLessons = Collections.emptySet();
         }
 
-        bookingService.deleteExistingBookingForClient(client);
+        bookingService.deleteExistingBookingsForClient(client);
 
         bookingService.addNewClientBookings(client, selectedLessons);
 

@@ -8,7 +8,7 @@
 </head>
 <body>
 <h1>Register</h1>
-<form method="POST" action="${pageContext.request.contextPath}/register">
+<form id="register" onsubmit="return validateForm()" method="POST" action="${pageContext.request.contextPath}/register">
     <label>
         Username:
         <input type="text" name="username" value=""/>
@@ -21,4 +21,23 @@
 </form>
 <p>Already have a user? Login <a href="${pageContext.request.contextPath}/login">here</a>.</p>
 </body>
+<script>
+    function validateForm() {
+        var username = document.forms["register"]["username"].value;
+
+        if (username.length < 6) {
+            alert("Username must be at least 6 characters in length");
+            return false;
+        }
+
+        var request = new XMLHttpRequest();
+        request.open('GET', '/clientExists/' + username, false);
+        request.send(null);
+
+        if (request.status === 204) {
+            alert("A client with that username already exists");
+            return false;
+        }
+    }
+</script>
 </html>

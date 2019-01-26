@@ -32,7 +32,7 @@ public class BookingService {
      * @param client the client to delete booking for
      */
     @Transactional
-    public void deleteExistingBookingForClient(Client client) {
+    public void deleteExistingBookingsForClient(Client client) {
         log.info("Deleting all existing bookings for client with ID: {}", client.getClientid());
         lessonBookedRepository.deleteAllByClientid(client.getClientid());
     }
@@ -40,7 +40,7 @@ public class BookingService {
     /**
      * Adds bookings for the client for each selected lesson provided
      *
-     * @param client the client to add bookings for
+     * @param client          the client to add bookings for
      * @param selectedLessons the selected lessons to book
      */
     @Transactional
