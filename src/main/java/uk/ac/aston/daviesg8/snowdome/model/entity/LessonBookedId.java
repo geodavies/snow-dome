@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 class LessonBookedId implements Serializable {
 
-    private Integer clientid;
+  private Integer clientid;
 
-    private String lessonid;
+  private String lessonid;
 
 }

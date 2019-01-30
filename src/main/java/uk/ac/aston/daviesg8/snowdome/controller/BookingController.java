@@ -1,5 +1,8 @@
 package uk.ac.aston.daviesg8.snowdome.controller;
 
+import java.util.Collections;
+import java.util.Set;
+import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,48 +13,44 @@ import uk.ac.aston.daviesg8.snowdome.model.exception.ClientNotLoggedInException;
 import uk.ac.aston.daviesg8.snowdome.service.BookingService;
 import uk.ac.aston.daviesg8.snowdome.service.ClientService;
 
-import javax.servlet.http.HttpSession;
-import java.util.Collections;
-import java.util.Set;
-
 /**
  * This controller class is responsible for handling requests related to booking
  */
 @Controller
 public class BookingController extends AbstractAuthenticatedController {
 
-    private final BookingService bookingService;
+  private final BookingService bookingService;
 
-    @Autowired
-    protected BookingController(ClientService clientService, BookingService bookingService) {
-        super(clientService);
-        this.bookingService = bookingService;
+  @Autowired
+  protected BookingController(ClientService clientService, BookingService bookingService) {
+    super(clientService);
+    this.bookingService = bookingService;
+  }
+
+  /**
+   * Extracts all of the currently selected lessons from the session, deletes all existing bookings
+   * for the logged in client and replaces them with the new ones.
+   *
+   * @param httpSession the http session containing client and selected lessons
+   * @return redirect
+   * @throws ClientNotLoggedInException the session is not authenticated
+   */
+  @RequestMapping(value = "/lessons/selected/finalise", method = RequestMethod.POST)
+  public String finaliseSelectedLessons(HttpSession httpSession) throws ClientNotLoggedInException {
+    super.checkLoggedIn(httpSession);
+
+    Client client = (Client) httpSession.getAttribute("client");
+    Set<Lesson> selectedLessons = (Set<Lesson>) httpSession.getAttribute("selectedLessons");
+
+    if (selectedLessons == null) {
+      selectedLessons = Collections.emptySet();
     }
 
-    /**
-     * Extracts all of the currently selected lessons from the session, deletes all existing bookings for the logged in
-     * client and replaces them with the new ones.
-     *
-     * @param httpSession the http session containing client and selected lessons
-     * @return redirect
-     * @throws ClientNotLoggedInException the session is not authenticated
-     */
-    @RequestMapping(value = "/lessons/selected/finalise", method = RequestMethod.POST)
-    public String finaliseSelectedLessons(HttpSession httpSession) throws ClientNotLoggedInException {
-        super.checkLoggedIn(httpSession);
+    bookingService.deleteExistingBookingsForClient(client);
 
-        Client client = (Client) httpSession.getAttribute("client");
-        Set<Lesson> selectedLessons = (Set<Lesson>) httpSession.getAttribute("selectedLessons");
+    bookingService.addNewClientBookings(client, selectedLessons);
 
-        if (selectedLessons == null) {
-            selectedLessons = Collections.emptySet();
-        }
-
-        bookingService.deleteExistingBookingsForClient(client);
-
-        bookingService.addNewClientBookings(client, selectedLessons);
-
-        return "redirect:/lessons/selected";
-    }
+    return "redirect:/lessons/selected";
+  }
 
 }

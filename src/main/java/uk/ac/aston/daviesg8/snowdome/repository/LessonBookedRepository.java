@@ -10,6 +10,6 @@ import uk.ac.aston.daviesg8.snowdome.model.entity.LessonBooked;
 @Repository
 public interface LessonBookedRepository extends JpaRepository<LessonBooked, Long> {
 
-    void deleteAllByClientid(Integer clientid);
+  void deleteAllByClientid(Integer clientid);
 
 }

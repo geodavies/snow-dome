@@ -1,7 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-"http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 
 <html>
 <head>
@@ -14,6 +13,10 @@
             border: 1px solid black;
         }
     </style>
+    <link rel='stylesheet' href='${pageContext.request.contextPath}/resources/css/fullcalendar.min.css' />
+    <script src='${pageContext.request.contextPath}/resources/js/jquery.min.js'></script>
+    <script src='${pageContext.request.contextPath}/resources/js/moment.min.js'></script>
+    <script src='${pageContext.request.contextPath}/resources/js/fullcalendar.min.js'></script>
 </head>
 <body>
 <jsp:include page="navbar.jsp"/>
@@ -41,5 +44,25 @@
         </tr>
     </c:forEach>
 </table>
+<br/>
+<div id='calendar'></div>
 </body>
+<script>
+  $(function() {
+    $('#calendar').fullCalendar({
+      defaultView: 'basicWeek',
+      editable: false,
+      defaultDate: '2010-12-03',
+      events: [
+        <c:forEach items="${lessons}" var="lesson">
+          {
+            title: '${lesson.description}',
+            start: new Date('${lesson.startDateTime}'),
+            end: new Date('${lesson.startDateTime}')
+          },
+        </c:forEach>
+      ]
+    })
+  });
+</script>
 </html>

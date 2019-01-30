@@ -1,6 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-"http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 
 <html>
 <head>
@@ -8,17 +7,51 @@
 </head>
 <body>
 <h1>Login</h1>
-<form method="POST" action="${pageContext.request.contextPath}/login">
+<form id="login" onsubmit="return checkUsernameLength()" method="POST" action="${pageContext.request.contextPath}/login">
     <label>
-        Username:
-        <input type="text" name="username" value=""/>
+        Username: <input type="text" name="username" onchange="checkUserExists()" value=""/>
     </label><br/>
     <label>
-        Password:
-        <input type="password" name="password" value=""/>
+        Password: <input type="password" name="password" value=""/>
     </label><br/>
-    <input type="submit" value="Login"/>
+    <button id="login-button" onclick="login()">Login</button>
+    <button id="register-button" onclick="register()" disabled>Register</button>
 </form>
-<p>Don't have a user yet? Register <a href="${pageContext.request.contextPath}/register">here</a>.</p>
 </body>
+<script>
+  function checkUserExists() {
+    var username = document.forms["login"]["username"].value;
+
+    var request = new XMLHttpRequest();
+    request.open('GET', '/clientExists/' + username, false);
+    request.send(null);
+
+    if (request.status === 404) {
+      document.getElementById("register-button").disabled = false;
+      return false;
+    } else {
+      document.getElementById("register-button").disabled = true;
+      return true;
+    }
+  }
+
+  function checkUsernameLength() {
+    var username = document.forms["login"]["username"].value;
+
+    if (username.length < 6) {
+      alert("Username must be at least 6 characters in length");
+      return false;
+    }
+  }
+
+  function login() {
+    var form = document.getElementById('login');
+    form.action = '${pageContext.request.contextPath}/login';
+  }
+
+  function register() {
+    var form = document.getElementById('login');
+    form.action = '${pageContext.request.contextPath}/register';
+  }
+</script>
 </html>
