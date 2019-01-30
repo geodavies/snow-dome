@@ -13,10 +13,11 @@
             border: 1px solid black;
         }
     </style>
-    <link rel='stylesheet' href='${pageContext.request.contextPath}/resources/css/fullcalendar.min.css' />
-    <script src='${pageContext.request.contextPath}/resources/js/jquery.min.js'></script>
-    <script src='${pageContext.request.contextPath}/resources/js/moment.min.js'></script>
-    <script src='${pageContext.request.contextPath}/resources/js/fullcalendar.min.js'></script>
+
+    <link rel='stylesheet' href='${pageContext.request.contextPath}/css/fullcalendar.min.css' />
+    <script src='${pageContext.request.contextPath}/js/jquery.min.js'></script>
+    <script src='${pageContext.request.contextPath}/js/moment.min.js'></script>
+    <script src='${pageContext.request.contextPath}/js/fullcalendar.min.js'></script>
 </head>
 <body>
 <jsp:include page="navbar.jsp"/>
