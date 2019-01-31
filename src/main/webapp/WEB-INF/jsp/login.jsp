@@ -38,7 +38,7 @@
   function checkUsernameLength() {
     var username = document.forms["login"]["username"].value;
 
-    if (username.length < 6) {
+    if (username.length < 8) {
       alert("Username must be at least 6 characters in length");
       return false;
     }
