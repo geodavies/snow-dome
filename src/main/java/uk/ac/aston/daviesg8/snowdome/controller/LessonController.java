@@ -47,6 +47,8 @@ public class LessonController extends AbstractAuthenticatedController {
     List<Lesson> allLessons = lessonService.getAllLessons();
     modelMap.addAttribute("lessons", allLessons);
 
+    modelMap.addAttribute("client", httpSession.getAttribute("client"));
+
     return "/availableLessons";
   }
 
@@ -111,6 +113,8 @@ public class LessonController extends AbstractAuthenticatedController {
     } else {
       modelMap.addAttribute("lessons", selectedLessons);
     }
+
+    modelMap.addAttribute("client", httpSession.getAttribute("client"));
 
     return "/selectedLessons";
   }
